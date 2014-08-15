@@ -19,7 +19,8 @@ def get_netem():
     dev = request.args.get('dev', 0, type=str)
     conf = nm.get_netem(dev)
     return jsonify(netem_config=conf['conf'], delay=conf['delay'],
-                   d_var=conf['d_var'], d_cor=conf['d_cor'])
+                   d_var=conf['d_var'], d_cor=conf['d_cor'],
+                   loss=conf['loss'], l_cor=conf['l_cor'])
 
 @app.route('/_set_delay')
 def set_delay():
@@ -27,9 +28,14 @@ def set_delay():
     delay = request.args.get('delay', 0, type=str)
     d_var = request.args.get('d_var', 0, type=str)
     d_cor = request.args.get('d_cor', 0, type=str)
-    conf = nm.set_delay(dev, delay, d_var, d_cor)
+    loss = request.args.get('loss', 0, type=str)
+    l_cor = request.args.get('l_cor', 0, type=str)
+    conf = nm.set_delay(dev, delay, d_var, d_cor, loss, l_cor)
+
     return jsonify(netem_config=conf['conf'], delay=conf['delay'],
-                   d_var=conf['d_var'], d_cor=conf['d_cor'])
+                   d_var=conf['d_var'], d_cor=conf['d_cor'],
+                   loss=conf['loss'], l_cor=conf['l_cor'])
+
 
 if __name__ == '__main__':
     app.run(
