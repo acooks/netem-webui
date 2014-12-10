@@ -13,9 +13,7 @@
           $("#netem_config").text(data.netem_config);
           $("#delay").val(data.delay);
           $("#d_var").val(data.d_var);
-          $("#d_cor").val(data.d_cor);
           $("#loss").val(data.loss);
-          $("#l_cor").val(data.l_cor);
         });
         return false;
       }
@@ -27,16 +25,12 @@
           dev: $("#dev_select").val(),
           delay: $("#delay").val(),
           d_var: $("#d_var").val(),
-          d_cor: $("#d_cor").val(),
           loss:  $("#loss").val(),
-          l_cor: $("#l_cor").val(),
         }, function(data) {
           $("#netem_config").text(data.netem_config);
           $("#delay").val(data.delay);
           $("#d_var").val(data.d_var);
-          $("#d_cor").val(data.d_cor);
           $("#loss").val(data.loss);
-          $("#l_cor").val(data.l_cor);
         });
         return false;
       });
@@ -60,9 +54,7 @@
         <p>
         Delay: <input type="text" size="6" id="delay" value="1ms"/>
         Delay variation: <input type="text" size="4" id="d_var" value="1ms"/>
-        Delay correlation: <input type="text" size="4" id="d_cor" value="50"/>
         Loss: <input type="text" size="6" id="loss" value="0.001%"/>
-        Loss correlation: <input type="text" size="4" id="l_cor" value="1%"/>
         <p><a href="javascript:void();" id="set_delay">Update</a>
         <script type="text/javascript">
             $('a#get_netem').click();
