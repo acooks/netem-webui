@@ -5,6 +5,14 @@ class Netem(object):
    def __init__(self):
       pass
 
+   def add_netem(self, dev):
+      assert dev
+      args = ['tc', 'qdisc', 'add', 'dev', dev, 'root', 'netem', 'delay', '1ms', '0.1ms', 'loss', '0.01%']
+      print args
+      p = subprocess.Popen(args, stdout=subprocess.PIPE)
+      output = p.communicate()[0]
+
+
    def get_netem(self, dev):
       assert dev
       print dev
@@ -32,6 +40,10 @@ class Netem(object):
 
    def set_delay(self, dev, d_size, d_variation='0.01ms', loss='0.001%' ):
       assert dev
+      curconf = self.get_netem(dev)
+      if not curconf['conf']:
+         print "no netem on dev: [%s]. Adding it..." % dev
+         self.add_netem(dev)
       print ("dev: [%s] delay: [%s] d_variation: [%s]" \
              % (dev, d_size, d_variation))
       args = ['tc', 'qdisc', 'change', 'dev', dev, 'root', 'netem', 'delay',
