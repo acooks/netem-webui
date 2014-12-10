@@ -25,7 +25,7 @@ class Netem(object):
 
 
    def parse_tc(self, tc_string):
-      val = {'conf': tc_string, 'delay':'0.01ms', 'd_var':'0.01ms', 'loss':'0%'};
+      val = {'conf': tc_string, 'delay':'none', 'd_var':'none', 'loss':'none'};
 
       parts = tc_string.split()
       print(parts)
