@@ -4,23 +4,33 @@ import json
 class Netem(object):
 
    def __init__(self):
-      conf = json.load(open('ifaces.conf.json'))
-      self.ifaces = conf['ifaces']
+      self.load_config()
       print self.ifaces
 
 
+   def load_config(self):
+      try:
+         fname = 'ifaces.conf.json'
+         with open(fname) as cf:
+             conf = json.load(cf)
+         self.ifaces = conf['ifaces']
+      except:
+         args = ['ls', '/sys/class/net']
+         p = subprocess.Popen(args, stdout=subprocess.PIPE)
+         self.ifaces = p.communicate()[0].split()
+      self.ifaces = filter(self.is_allowed_iface, self.ifaces)
+      with open(fname, 'w') as cf:
+         json.dump({'ifaces':self.ifaces}, cf)
+
+
    def list_ifaces(self):
-      args = ['ls', '/sys/class/net']
-      p = subprocess.Popen(args, stdout=subprocess.PIPE)
-      output = p.communicate()[0].split()
-      output = filter(self.is_allowed_iface, output)
-      return output
+      return self.ifaces
 
 
    def is_allowed_iface(self, dev):
-      if dev.encode('utf-8') in self.ifaces:
-         return True
-      return False
+      if 'lo' == dev:
+         return False
+      return True
 
 
    def add_netem(self, dev):
