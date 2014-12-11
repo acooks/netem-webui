@@ -48,24 +48,40 @@ class Netem(object):
       parts = tc_string.split()
       print(parts)
 
-      if len(parts) > 11:
-        val['delay'] = parts[9]
-        val['d_var'] = parts[10]
-        val['loss']  = parts[12]
+      if 'delay' in parts:
+         i = parts.index('delay')
+         val['delay'] = parts[i+1]
+         # is there a word after the delay and does it start with a digit?
+         if len(parts) > i+2 and parts[i+2][0].isdigit():
+            val['d_var'] = parts[i+2]
+
+      if 'loss' in parts:
+         i = parts.index('loss')
+         val['loss'] = parts[i+1]
+
       print(val)
       return val;
 
 
-   def set_delay(self, dev, d_size, d_variation='0.01ms', loss='0.001%' ):
+   def set_delay(self, dev, d_size, d_variation, loss ):
       assert dev
       curconf = self.get_netem(dev)
       if not curconf['conf']:
          print "no netem on dev: [%s]. Adding it..." % dev
          self.add_netem(dev)
-      print ("dev: [%s] delay: [%s] d_variation: [%s]" \
-             % (dev, d_size, d_variation))
-      args = ['tc', 'qdisc', 'change', 'dev', dev, 'root', 'netem', 'delay',
-              d_size, d_variation, 'loss', loss]
+      args = ['tc', 'qdisc', 'change', 'dev', dev, 'root', 'netem']
+      if d_size and d_size[0].isdigit():
+         d_size = d_size.replace(" ", "")
+         print ("dev: [%s] delay: [%s]" % (dev, d_size))
+         args.extend(['delay', d_size]);
+      if d_variation and d_variation[0].isdigit():
+         d_variation = d_variation.replace(" ", "")
+         print ("dev: [%s] jitter: [%s]" % (dev, d_variation))
+         args.extend([d_variation]);
+      if loss and loss[0].isdigit():
+         loss = loss.replace(" ", "")
+         print ("dev: [%s] loss: [%s]" % (dev, loss))
+         args.extend(['loss', loss])
       print args
       p = subprocess.Popen(args, stdout=subprocess.PIPE)
       return self.get_netem(dev)
