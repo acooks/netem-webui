@@ -14,12 +14,19 @@ def netem():
     return render_template('netem.html')
 
 
+@app.route('/_list_ifaces')
+def get_ifaces():
+    iflist = nm.list_ifaces()
+    print iflist
+    return jsonify(ifaces=iflist)
+
 @app.route('/_get_netem')
 def get_netem():
     dev = request.args.get('dev', 0, type=str)
     conf = nm.get_netem(dev)
     return jsonify(netem_config=conf['conf'], delay=conf['delay'],
                    d_var=conf['d_var'], loss=conf['loss'])
+
 
 @app.route('/_set_delay')
 def set_delay():

@@ -6,6 +6,19 @@
           rel="stylesheet">
   <script type=text/javascript>
     $(function() {
+      list_ifaces = function() {
+        $.getJSON('/_list_ifaces',
+                  {},
+                  function(data) {
+                     $('#dev_select').empty();
+                     $.each(data.ifaces,
+                            function (ix, val) {
+                               var option = $('<option>').text(val).val(val);
+                               $('#dev_select').append(option);
+                            }
+                     );
+                  });
+      }
       get_netem = function() {
         $.getJSON('/_get_netem', {
           dev: $("#dev_select").val(),
@@ -18,6 +31,7 @@
         return false;
       }
       $('#dev_select').bind('change', get_netem);
+      $( document ).ready(list_ifaces);
       $( document ).ready(get_netem);
 
       $('a#set_delay').bind('click', function() {
@@ -45,10 +59,7 @@
       <hr/>
       <div>
         <p>
-        <select id="dev_select">
-          <option value="eth4_v406"/>VLAN 406</option>
-          <option value="eth4_v407"/>VLAN 407</option>
-        </select>
+        <select id="dev_select"></select>
         <p>
         <span id="netem_config" style="visibility: hidden"></span>
         <p>

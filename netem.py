@@ -1,9 +1,27 @@
 import subprocess
+import json
 
 class Netem(object):
 
    def __init__(self):
-      pass
+      conf = json.load(open('ifaces.conf.json'))
+      self.ifaces = conf['ifaces']
+      print self.ifaces
+
+
+   def list_ifaces(self):
+      args = ['ls', '/sys/class/net']
+      p = subprocess.Popen(args, stdout=subprocess.PIPE)
+      output = p.communicate()[0].split()
+      output = filter(self.is_allowed_iface, output)
+      return output
+
+
+   def is_allowed_iface(self, dev):
+      if dev.encode('utf-8') in self.ifaces:
+         return True
+      return False
+
 
    def add_netem(self, dev):
       assert dev
@@ -34,7 +52,7 @@ class Netem(object):
         val['delay'] = parts[9]
         val['d_var'] = parts[10]
         val['loss']  = parts[12]
-        print(val)
+      print(val)
       return val;
 
 
