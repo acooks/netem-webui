@@ -5,7 +5,7 @@ A web interface for configuring netem parameters
 
 ### Dependencies:
 	python-flask
-        ([Flask-Socketio https://flask-socketio.readthedocs.org/en/latest/])
+        ([Flask-Socketio] https://flask-socketio.readthedocs.org/en/latest/)
 
 ### Start the web app:
 	sudo python main.py
