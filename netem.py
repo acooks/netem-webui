@@ -76,7 +76,7 @@ class Netem(object):
    def set_delay(self, dev, d_size, d_variation, loss ):
       assert dev
       curconf = self.get_netem(dev)
-      if not curconf['conf']:
+      if not curconf['conf'] or 'netem' not in curconf['conf']:
          print "no netem on dev: [%s]. Adding it..." % dev
          self.add_netem(dev)
       args = ['tc', 'qdisc', 'change', 'dev', dev, 'root', 'netem']
