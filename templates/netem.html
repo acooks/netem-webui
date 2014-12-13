@@ -2,9 +2,13 @@
 <html lang="en">
   <head>
     <script src="{{url_for('static', filename='jquery-1.4.2.min.js')}}"></script>
+    <script type="text/javascript"
+            src="{{url_for('static', filename='socket.io.min.js')}}"></script>
+    <script type="text/javascript"
+            src="{{url_for('static', filename='jquery.canvasjs.min.js')}}"></script>
     <link href="{{url_for('static', filename='bootstrap.min.css')}}"
           rel="stylesheet">
-  <script type=text/javascript>
+    <script type=text/javascript>
     $(function() {
       list_ifaces = function() {
         $.getJSON('/_list_ifaces',
@@ -49,6 +53,61 @@
         return false;
       });
     });
+
+    $(document).ready(function() {
+            namespace = '/statsNS';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            socket.on('connect', function() {
+                socket.emit('my event', {data: 'I\'m connected!'});
+            });
+
+            // event handler for server sent data
+            socket.on('stats', function(msg) {
+                var dev = $("#dev_select").val();
+                if (msg.data && msg.data[dev]) {
+                    updateChart(msg.data[dev]['tx-bytes']);
+                }
+            });
+
+        var dps = []; // dataPoints
+
+        var chart = new CanvasJS.Chart("chartContainer",{
+                title :{ },
+                data: [{
+                        type: "line",
+                        dataPoints: dps
+                }]
+        });
+
+        var xVal = 0;
+        var yVal = 0;
+        var dataLength = 200; // number of dataPoints visible at any point
+
+        var updateChart = function (tx_bytes) {
+                yVal = tx_bytes;
+                dps.push({
+                                x: xVal,
+                                y: yVal
+                        });
+                xVal++;
+
+                if (dps.length > dataLength)
+                {
+                        dps.shift();
+                }
+                chart.render();
+        };
+        var clearChart = function() {
+            while (dps.length > 0) {
+               dps.pop();
+            }
+            xVal = 0;
+            dps.push({x:0, y:0});
+            chart.render();
+        };
+        $('#dev_select').bind('change', clearChart);
+
+});
   </script>
   </head>
   <body>
@@ -71,6 +130,7 @@
             $('a#get_netem').click();
         </script>
       </div>
+      <div id="chartContainer" style="height: 300px; width:100%;"></div>
       <div>
         <h3>Help</h3>
           <p>

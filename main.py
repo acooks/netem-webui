@@ -1,12 +1,43 @@
-from netem import Netem
-nm = Netem()
+from gevent import monkey
+monkey.patch_all()
 
-# We'll render HTML templates and access data sent by GET
-# using the request object from flask. jsonigy is required
-# to send JSON as a response of a request
-from flask import Flask, render_template, request, jsonify
+import time
+from threading import Thread
+
+from flask import Flask, render_template, session, request, jsonify
+from flask.ext.socketio import SocketIO, emit
+
+from netem import Netem
+from netstats import Netstats
+
+nm = Netem()
+ns = Netstats(nm.list_ifaces())
+
 # Initialize the Flask application
 app = Flask(__name__)
+app.debug = True
+socketio = SocketIO(app)
+stats_thread = None
+
+def stats_thread_run():
+   count = 0
+   while True:
+      time.sleep(0.1)
+      count += 1
+      stats = ns.get_stats()
+      socketio.emit('stats',
+                    {'data': stats, 'count': count},
+                    namespace='/statsNS')
+
+
+@socketio.on('connect', namespace='/statsNS')
+def stats_connect():
+   print('Client Connected')
+   global stats_thread
+   if stats_thread is None:
+      stats_thread = Thread(target=stats_thread_run)
+      stats_thread.start()
+   emit('response', {'data': 'Connected', 'count': 0})
 
 
 @app.route('/')
@@ -41,9 +72,9 @@ def set_delay():
 
 
 if __name__ == '__main__':
-    app.run(
+    socketio.run(
+        app,
         host="0.0.0.0",
         port=int("8080"),
-        debug=True
     )
 
