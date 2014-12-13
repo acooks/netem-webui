@@ -4,8 +4,8 @@ netem-webui
 A web interface for configuring netem parameters
 
 ### Dependencies:
-	python-flask
-        Flask-Socketio: https://flask-socketio.readthedocs.org/en/latest/
+* [python-flask] (http://flask.pocoo.org/)
+* [Flask-Socketio] (https://flask-socketio.readthedocs.org/en/latest/)
 
 ### Start the web app:
 	sudo python main.py
