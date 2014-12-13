@@ -38,7 +38,7 @@
       $( document ).ready(list_ifaces);
       $( document ).ready(get_netem);
 
-      $('a#set_delay').bind('click', function() {
+      $('#set_delay').bind('click', function() {
         $.getJSON('/_set_delay', {
           dev: $("#dev_select").val(),
           delay: $("#delay").val(),
@@ -113,22 +113,17 @@
   <body>
     <div class="container">
       <div class="header">
-        <h3 class="text-muted">Network Emulator Configuration</h3>
+        <h3 class="text-muted">Netem WebUI</h3>
       </div>
       <hr/>
       <div>
-        <p>
-        <select id="dev_select"></select>
-        <p>
         <span id="netem_config" style="visibility: hidden"></span>
         <p>
-        Delay: <input type="text" size="6" id="delay" value="1ms"/>
-        Delay variation: <input type="text" size="4" id="d_var" value="1ms"/>
-        Loss: <input type="text" size="6" id="loss" value="0.001%"/>
-        <p><a href="javascript:void();" id="set_delay">Update</a>
-        <script type="text/javascript">
-            $('a#get_netem').click();
-        </script>
+        <select id="dev_select"></select>
+        Delay: <input type="text" size="6" id="delay"/>
+        Delay variation: <input type="text" size="6" id="d_var"/>
+        Loss: <input type="text" size="6" id="loss"/>
+        <button id="set_delay">Update</button>
       </div>
       <div id="chartContainer" style="height: 300px; width:100%;"></div>
       <div>
