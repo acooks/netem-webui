@@ -1,10 +1,11 @@
 netem-webui
 ===========
 
-A simple, stand-alone web interface for configuring netem parameters
+A web interface for configuring netem parameters
 
 ### Dependencies:
 	python-flask
+        ([Flask-Socketio https://flask-socketio.readthedocs.org/en/latest/])
 
 ### Start the web app:
 	sudo python main.py
@@ -14,3 +15,4 @@ A simple, stand-alone web interface for configuring netem parameters
 
 ### TODO:
 * Draw the delay, jitter, loss matrices! :D
+* Plot inter-arrival times
